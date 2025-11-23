@@ -1,14 +1,18 @@
 import axiosClient from "./axios-client";
 
 const endpoints = {
-    signIn: "/sign-in",
-    signUp: "/sign-up"
-}
+  login: "/auth/login",
+  register: "/auth/register",
+};
 
 export async function signIn(data: { email: string; password: string }) {
-    return axiosClient.post(endpoints.signIn, data);
+  return axiosClient.post(endpoints.login, data);
 }
 
-export async function signUp(data: { email: string; password: string; fullName: string }) {
-    return axiosClient.post(endpoints.signUp, data);
+export async function signUp(data: {
+  email: string;
+  password: string;
+  fullName: string;
+}) {
+  return axiosClient.post(endpoints.register, data);
 }

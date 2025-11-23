@@ -89,7 +89,7 @@ const MAX_AGE = 1 * 24 * 60 * 60; // 1 day
 
 const DEFAULT_SESSION_OPTIONS: Partial<SessionOptions> = {
   strategy: "jwt",
-  maxAge: MAX_AGE
+  maxAge: MAX_AGE,
 };
 
 const authOptions: NextAuthOptions = {
@@ -98,7 +98,7 @@ const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
         // your authorize implementation...
@@ -107,6 +107,7 @@ const authOptions: NextAuthOptions = {
         if (!email || !password) return null;
         try {
           const response = await signIn({ email, password });
+          console.log("🚀 ~ response:", response);
           const userData = response?.data?.user;
           if (!userData) return null;
           return {
@@ -114,19 +115,21 @@ const authOptions: NextAuthOptions = {
             email: userData.email,
             name: userData.fullName ?? userData.name,
             accessToken: response?.data?.accessToken,
-            refreshToken: response?.data?.refreshToken
+            refreshToken: response?.data?.refreshToken,
           };
         } catch (e: any) {
-          throw new Error(e?.response?.data?.message || e?.message || "Login failed");
+          throw new Error(
+            e?.response?.data?.message || e?.message || "Login failed"
+          );
         }
-      }
-    })
+      },
+    }),
   ],
 
   secret: serverConfig.auth.secret,
   jwt: {
     secret: serverConfig.auth.secret,
-    maxAge: MAX_AGE
+    maxAge: MAX_AGE,
   },
   session: DEFAULT_SESSION_OPTIONS,
 
@@ -136,13 +139,14 @@ const authOptions: NextAuthOptions = {
       name: sessionCookieName(),
       options: {
         httpOnly: true,
-        sameSite: (process.env.COOKIE_SAME_SITE as "lax" | "strict" | "none") || "lax",
+        sameSite:
+          (process.env.COOKIE_SAME_SITE as "lax" | "strict" | "none") || "lax",
         path: "/",
         secure: SECURE,
         // Domain only set when COOKIE_DOMAIN returns a value; otherwise NextAuth will not set Domain attribute
-        domain: COOKIE_DOMAIN
-      }
-    }
+        domain: COOKIE_DOMAIN,
+      },
+    },
     // You can also override csrfToken and callbackUrl cookies similarly if needed
   },
 
@@ -152,8 +156,10 @@ const authOptions: NextAuthOptions = {
         token.id = (user as any).id;
         token.email = (user as any).email;
         token.name = (user as any).name;
-        if ((user as any).accessToken) token.accessToken = (user as any).accessToken;
-        if ((user as any).refreshToken) token.refreshToken = (user as any).refreshToken;
+        if ((user as any).accessToken)
+          token.accessToken = (user as any).accessToken;
+        if ((user as any).refreshToken)
+          token.refreshToken = (user as any).refreshToken;
       }
       return token;
     },
@@ -162,7 +168,7 @@ const authOptions: NextAuthOptions = {
         session.user = {
           id: token.id as string,
           email: token.email as string,
-          name: token.name as string
+          name: token.name as string,
         };
         session.accessToken = token.accessToken as string | undefined;
       }
@@ -177,10 +183,10 @@ const authOptions: NextAuthOptions = {
       } catch {
         return baseUrl;
       }
-    }
+    },
   },
 
-  debug: process.env.NODE_ENV === "development"
+  debug: process.env.NODE_ENV === "development",
 };
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {

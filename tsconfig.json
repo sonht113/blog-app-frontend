@@ -30,7 +30,8 @@
       "@config": ["./src/config.ts"],
       "@providers": ["./src/providers.tsx"],
       "@static/*": ["./src/static/*"],
-      "@styles/*": ["./src/styles/*"]
+      "@styles/*": ["./src/styles/*"],
+      "@lib/*": ["./src/lib/*"]
     }
   },
   "include": [

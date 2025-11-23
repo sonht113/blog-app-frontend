@@ -1,20 +1,19 @@
 "use client";
 
-
 import { yupResolver } from "@hookform/resolvers/yup";
+import { signIn } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 
 import Link from "next/link";
 
-import ErrorField from "@/components/error-field";
-import LabelField from "@/components/label-field";
-import Button from "@/components/ui/button-custom";
-import { FlipWords } from "@/components/ui/flipwords";
-import { Input } from "@/components/ui/input";
-import StrongPasswordInput from "@/components/ui/strongPassword";
-import { ROUTE } from "@/constants/route";
-import { loginSchema } from "@/lib/validations/auth/login";
-
+import ErrorField from "@components/error-field";
+import LabelField from "@components/label-field";
+import Button from "@components/ui/button-custom";
+import { FlipWords } from "@components/ui/flipwords";
+import { Input } from "@components/ui/input";
+import StrongPasswordInput from "@components/ui/strongPassword";
+import { ROUTE } from "@constants/route";
+import { loginSchema } from "@lib/validations/auth/login";
 
 export default function LoginPage() {
   const {
@@ -28,8 +27,13 @@ export default function LoginPage() {
     resolver: yupResolver(loginSchema),
   });
 
-  const onSubmit = (data: { email: string; password: string }) => {
-    console.log("🚀 ~ onSubmit ~ data:", data);
+  const onSubmit = async (data: { email: string; password: string }) => {
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
+    console.log("🚀 ~ onSubmit ~ res:", res);
   };
 
   return (
